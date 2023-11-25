@@ -14,13 +14,14 @@ import java.util.List;
 public class MusicController {
     @Autowired
     private MusicRepository repository;
-
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
     public void createMusic(@RequestBody MusicRequestDTO data){
         Music musicData = new Music(data);
         repository.save(musicData);
         return;
     }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping
     public List<MusicResponseDTO> getAll(){
         List<MusicResponseDTO> musicList = repository.findAll().stream().map(MusicResponseDTO::new).toList();
