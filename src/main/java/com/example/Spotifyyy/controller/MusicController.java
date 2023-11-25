@@ -2,10 +2,10 @@ package com.example.Spotifyyy.controller;
 
 import com.example.Spotifyyy.music.Music;
 import com.example.Spotifyyy.music.MusicRepository;
+import com.example.Spotifyyy.music.MusicRequestDTO;
+import com.example.Spotifyyy.music.MusicResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -14,9 +14,16 @@ import java.util.List;
 public class MusicController {
     @Autowired
     private MusicRepository repository;
+
+    @PostMapping
+    public void createMusic(@RequestBody MusicRequestDTO data){
+        Music musicData = new Music(data);
+        repository.save(musicData);
+        return;
+    }
     @GetMapping
-    public List<Music> getAll(){
-        List<Music> musicList = repository.findAll();
+    public List<MusicResponseDTO> getAll(){
+        List<MusicResponseDTO> musicList = repository.findAll().stream().map(MusicResponseDTO::new).toList();
         return musicList;
     }
 }
