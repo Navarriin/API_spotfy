@@ -23,4 +23,8 @@ public class Music {
         this.author = data.author();
         this.nameMusic = data.nameMusic();
     }
+
+    public Music(MusicDeleteDTO data){
+        this.id = data.id();
+    }
 }
