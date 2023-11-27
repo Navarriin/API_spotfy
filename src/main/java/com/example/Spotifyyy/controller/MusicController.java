@@ -20,12 +20,21 @@ public class MusicController {
         List<MusicResponseDTO> musicList = repository.findAll().stream().map(MusicResponseDTO::new).toList();
         return musicList;
     }
+    @GetMapping("/{id}")
+    public ResponseEntity getMusic(@PathVariable Long id){
+        Optional<Music> optionalMusic = repository.findById(id);
+        if(optionalMusic.isPresent()){
+            Music music = optionalMusic.get();
+            return ResponseEntity.ok(music);
+        }
+        return ResponseEntity.notFound().build();
+    }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
-    public void createMusic(@RequestBody MusicRequestDTO data){
+    public ResponseEntity createMusic(@RequestBody MusicRequestDTO data){
         Music musicData = new Music(data);
         repository.save(musicData);
-        return;
+        return ResponseEntity.ok(musicData);
     }
     @PutMapping()
     @Transactional
@@ -39,12 +48,10 @@ public class MusicController {
         }
         return ResponseEntity.notFound().build();
     }
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @DeleteMapping
-    public void deleteMusic(@RequestBody MusicDeleteDTO data){
-        Music musicData = new Music(data);
-        repository.delete(musicData);
-        return;
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteMusic(@PathVariable Long id){
+        repository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
