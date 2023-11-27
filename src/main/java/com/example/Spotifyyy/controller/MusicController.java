@@ -41,10 +41,10 @@ public class MusicController {
         repository.save(musicData);
         return ResponseEntity.ok(musicData);
     }
-    @PutMapping()
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity updateMusic(@RequestBody MusicResponseDTO data){
-        Optional<Music> optionalMusic = repository.findById(data.id());
+    public ResponseEntity updateMusic(@PathVariable Long id, @RequestBody MusicResponseDTO data){
+        Optional<Music> optionalMusic = repository.findById(id);
         if(optionalMusic.isPresent()){
             Music music = optionalMusic.get();
             music.setAuthor(data.author());
