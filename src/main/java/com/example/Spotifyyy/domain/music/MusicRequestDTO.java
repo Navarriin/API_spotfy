@@ -1,4 +1,4 @@
-package com.example.Spotifyyy.music;
+package com.example.Spotifyyy.domain.music;
 
 public record MusicRequestDTO(String author, String nameMusic) {
 }

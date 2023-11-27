@@ -1,4 +1,4 @@
-package com.example.Spotifyyy.music;
+package com.example.Spotifyyy.domain.music;
 
 import jakarta.persistence.*;
 import lombok.*;

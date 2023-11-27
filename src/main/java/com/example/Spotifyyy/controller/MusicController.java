@@ -1,6 +1,10 @@
 package com.example.Spotifyyy.controller;
 
-import com.example.Spotifyyy.music.*;
+import com.example.Spotifyyy.domain.music.Music;
+import com.example.Spotifyyy.domain.music.MusicRepository;
+import com.example.Spotifyyy.domain.music.MusicRequestDTO;
+import com.example.Spotifyyy.domain.music.MusicResponseDTO;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +30,9 @@ public class MusicController {
         if(optionalMusic.isPresent()){
             Music music = optionalMusic.get();
             return ResponseEntity.ok(music);
+        } else {
+            throw new EntityNotFoundException();
         }
-        return ResponseEntity.notFound().build();
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping
@@ -45,8 +50,10 @@ public class MusicController {
             music.setAuthor(data.author());
             music.setNameMusic(data.nameMusic());
             return ResponseEntity.ok(music);
+        }else {
+            throw new EntityNotFoundException();
         }
-        return ResponseEntity.notFound().build();
+
     }
     @DeleteMapping("/{id}")
     public ResponseEntity deleteMusic(@PathVariable Long id){
