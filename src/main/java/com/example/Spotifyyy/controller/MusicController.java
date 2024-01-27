@@ -1,64 +1,51 @@
 package com.example.Spotifyyy.controller;
 
-import com.example.Spotifyyy.domain.music.Music;
-import com.example.Spotifyyy.domain.music.MusicRepository;
-import com.example.Spotifyyy.domain.music.MusicRequestDTO;
-import com.example.Spotifyyy.domain.music.MusicResponseDTO;
-import jakarta.persistence.EntityNotFoundException;
+import com.example.Spotifyyy.dto.MusicDTO;
+import com.example.Spotifyyy.service.MusicService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("musics")
 public class MusicController {
-    @Autowired
-    private MusicRepository repository;
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
+
+    private final MusicService musicService;
+
     @GetMapping
-    public List<MusicResponseDTO> getAll(){
-        List<MusicResponseDTO> musicList = repository.findAll().stream().map(MusicResponseDTO::new).toList();
-        return musicList;
-    }
-    @GetMapping("/{id}")
-    public ResponseEntity getMusic(@PathVariable Long id){
-        Optional<Music> optionalMusic = repository.findById(id);
-        if(optionalMusic.isPresent()){
-            Music music = optionalMusic.get();
-            return ResponseEntity.ok(music);
-        } else {
-            throw new EntityNotFoundException();
-        }
-    }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<List<MusicDTO>> getAll(){
+        return ResponseEntity.ok().body(musicService.listAll());
+    }
+
+    @GetMapping("/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<MusicDTO> getMusic(@PathVariable Long id){
+        return ResponseEntity.ok().body(musicService.getById(id));
+    }
+
     @PostMapping
-    public ResponseEntity createMusic(@RequestBody MusicRequestDTO data){
-        Music musicData = new Music(data);
-        repository.save(musicData);
-        return ResponseEntity.ok(musicData);
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<MusicDTO> createMusic(@RequestBody MusicDTO body){
+        return ResponseEntity.ok().body(musicService.createMusic(body));
     }
-    @PutMapping("/{id}")
+
     @Transactional
-    public ResponseEntity updateMusic(@PathVariable Long id, @RequestBody MusicResponseDTO data){
-        Optional<Music> optionalMusic = repository.findById(id);
-        if(optionalMusic.isPresent()){
-            Music music = optionalMusic.get();
-            music.setAuthor(data.author());
-            music.setNameMusic(data.nameMusic());
-            return ResponseEntity.ok(music);
-        }else {
-            throw new EntityNotFoundException();
-        }
-
+    @PutMapping("/{id}")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<MusicDTO> updateMusic(@PathVariable Long id, @RequestBody MusicDTO body){
+        return ResponseEntity.ok().body(musicService.updateMusic(id, body));
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteMusic(@PathVariable Long id){
-        repository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public ResponseEntity<Void> deleteMusic(@PathVariable Long id){
+        musicService.deleteMusic(id);
+        return ResponseEntity.ok().build();
     }
-
 }
